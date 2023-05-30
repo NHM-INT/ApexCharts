@@ -1,0 +1,500 @@
+﻿@{
+    ViewData["Title"] = "Apex Charts";
+}
+
+<script src="~/js/apexcharts.js"></script>
+<script src="~/js/jquery-1.10.2.js"></script>
+<div>
+    <div class="row" >
+        <div id="PopulationGrowthContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="PopulationGrowth">
+                <div id="divPop">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+
+            </div>
+        </div>
+        <div id="HouseholdIncomeContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="HouseholdIncome">
+                <div id="divHousehold">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="EthnicityContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="Ethnicity">
+                <div id="divEthnicity">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+            </div>
+        </div>
+        <div id="RentContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="Rent">
+                <div id="divRent">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="RevenueContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="Revenue">
+                <div id="divRevenue">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+            </div>
+        </div>
+        <div id="SourceContainerDiv" class="col-lg-6" style="padding:10px">
+            <div id="Source">
+                <div id="divSource">
+                    <img  class="loading-image" src="~/images/loader-img.gif" alt="Loading..." />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        PopulationGrowthChart();
+        HouseholdIncomeChart();
+        EthnicityChart();
+        RentChart();
+        RevenueChart();
+        SourceChart();
+    });
+    function PopulationGrowthChart() {
+        $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Population Growth" },
+            success:
+                function (chartData) {
+
+                    if (chartData[0] != null) {
+                        var options = {
+                            series: [{
+                                name: "Pop-",
+                                data: chartData[0]
+                            }],
+                            chart: {
+                                height: 350,
+                                type: 'line',
+                                zoom: {
+                                    enabled: false
+                                }
+                            },
+                            dataLabels: {
+                                enabled: false
+                            },
+                            stroke: {
+                                curve: 'straight'
+                            },
+                            title: {
+                                text: 'Population Growth (Line Chart)',
+                                align: 'left'
+                            },
+                            grid: {
+                                row: {
+                                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                                    opacity: 0.5
+                                },
+                            },
+                            xaxis: {
+                                categories: chartData[1]
+                            },
+                            yaxis: {
+                                labels: {
+                                    formatter: function (value) {
+                                        return value.toLocaleString('en');
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                y: {
+                                    formatter: function (val) {
+                                        return val
+                                    },
+                                    title: {
+                                        formatter: function (seriesName) {
+                                            return ''
+                                        }
+                                    }
+                                }
+                            },
+
+
+                        }
+
+                        var chart = new ApexCharts(document.querySelector("#PopulationGrowth"), options);
+                        chart.render();
+                        $("#divPop").hide();
+
+
+                    }
+                    else {
+                        $('#PopulationGrowthContainerDiv').hide();
+                    }
+
+                },
+            error: function () {
+            }
+        });
+    }
+    function HouseholdIncomeChart() {
+        $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Household Income" },
+            success:
+
+                function (chartData) {
+                    if (chartData[0] != null) {
+                        var options = {
+                            series: [{
+                                name: 'Active',
+                                data: chartData[0]
+                            }],
+                            chart: {
+                                height: 350,
+                                type: 'bar',
+                            },
+                            plotOptions: {
+                                bar: {
+                                    borderRadius: 10,
+                                    dataLabels: {
+                                        position: 'top', // top, center, bottom
+                                    },
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                offsetY: -20,
+                                style: {
+                                    fontSize: '12px',
+                                    colors: ["#304758"]
+                                },
+                                formatter: function (val) {
+                                    return val.toLocaleString('en')
+                                }
+                            },
+
+                            xaxis: {
+                                categories: chartData[1],
+                                labels: {
+                                    formatter: function (value) {
+                                        value = '$ ' + value.toLocaleString('en')
+                                        return value;
+                                    }
+                                },
+                                axisBorder: {
+                                    show: false
+                                },
+                                axisTicks: {
+                                    show: false
+                                },
+                                crosshairs: {
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            colorFrom: '#D8E3F0',
+                                            colorTo: '#BED1E6',
+                                            stops: [0, 100],
+                                            opacityFrom: 0.4,
+                                            opacityTo: 0.5,
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                }
+                            },
+                            yaxis: {
+                                axisBorder: {
+                                    show: false
+                                },
+                                axisTicks: {
+                                    show: false,
+                                },
+                                labels: {
+                                    show: false
+                                }
+                            },
+                            title: {
+                                text: 'Household Income (Column Chart)',
+                                align: 'left'
+                            },
+                            tooltip: {
+                                y: {
+                                    formatter: function (val) {
+                                        return val
+                                    },
+                                    title: {
+                                        formatter: function (seriesName) {
+                                            return ''
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        var chart = new ApexCharts(document.querySelector("#HouseholdIncome"), options);
+                        chart.render();
+                        $("#divHousehold").remove();
+                    }
+                    else {
+                        $('#HouseholdIncomeContainerDiv').hide();
+                    }
+                },
+            error: function () {
+            }
+        });
+    }
+    function EthnicityChart() {
+      $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Ethnicity" },
+            success:
+
+                function (chartData) {
+                    if (chartData[0] != null) {
+                        var options = {
+                            series: chartData[0],
+                            chart: {
+                                height: 350,
+                                type: 'pie',
+                            },
+                            labels: chartData[1],
+                            title: {
+                                text: 'Ethnicity (Pie Chart)',
+                                align: 'left'
+                            },
+                            responsive: [{
+                                breakpoint: 480,
+                                options: {
+                                    chart: {
+                                        width: 350,
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }],
+                            tooltip: {
+                                y: {
+                                    formatter: function (value) {
+
+                                        return parseInt(value).toFixed();
+                                    }
+                                }
+                            }
+                        };
+
+                        var chart = new ApexCharts(document.querySelector("#Ethnicity"), options);
+                        chart.render();
+                    
+                        $("#divEthnicity").remove();
+                    }
+                    else {
+                        $('#EthnicityContainerDiv').hide();
+                    }
+                },
+            error: function () {
+            }
+     });
+    }
+    function RentChart() {
+        $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Rent" },
+            success:
+
+                function (chartData) {
+                    if (chartData[0] != null) {
+                        var options = {
+                            series: [{
+                                data: chartData[0]
+                            }],
+                            chart: {
+                                type: 'bar',
+                                height: 350
+                            },
+                            plotOptions: {
+                                bar: {
+                                    borderRadius: 4,
+                                    horizontal: true,
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function (val) {
+                                    return "$ " + val.toLocaleString('en')
+                                }
+                            },
+                            title: {
+                                text: 'Rent (Bar Chart)',
+                                align: 'left'
+                            },
+                            xaxis: {
+                                categories: chartData[1],
+                                labels: {
+                                    formatter: function (value) {
+                                        value = '$ ' + value.toLocaleString('en')
+                                        return value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                y: {
+                                    formatter: function (val) {
+                                        return val
+                                    },
+                                    title: {
+                                        formatter: function (seriesName) {
+                                            return ''
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        var chart = new ApexCharts(document.querySelector("#Rent"), options);
+                        chart.render();
+                        
+                        $("#divRent").remove();
+                    }
+                    else {
+                        $('#RentContainerDiv').hide();
+                    }
+
+                },
+            error: function () {
+            }
+        });
+    }
+    function RevenueChart() {
+        $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Revenue" },
+            success:
+
+                function (chartData) {
+                    if (chartData[0] != null && chartData[1] != null && chartData[2] != null) {
+                        var options = {
+                            series: [{
+                                name: 'Team A',
+                                data: chartData[0] 
+                            }, {
+                                name: 'Team B',
+                                data: chartData[1]
+                            }],
+                            chart: {
+                                height: 350,
+                                type: 'area'
+                            },
+                            dataLabels: {
+                                enabled: false
+                            },
+                            stroke: {
+                                curve: 'smooth'
+                            },
+                            xaxis: {
+                                type: 'datetime',
+                                categories: chartData[2]
+                            },
+                            title: {
+                                text: 'Revenue (Area Chart)',
+                                align: 'left'
+                            },
+                            tooltip: {
+                                x: {
+                                    format: 'dd/MM/yy HH:mm'
+                                },
+                            },
+                        };
+
+                        var chart = new ApexCharts(document.querySelector("#Revenue"), options);
+                        chart.render();
+
+                        $("#divRevenue").remove();
+                    }
+                    else {
+                        $('#RevenueContainerDiv').hide();
+                    }
+
+                },
+            error: function () {
+            }
+        });
+    }
+    function SourceChart() {
+        $.ajax({
+            url: "PopulateGraph",
+            type: "POST",
+            data: { ChartType: "Source" },
+            success:
+
+                function (chartData) {
+                    if (chartData[0] != null && chartData[1] != null && chartData[2] != null) {
+                        var options = {
+                            series: [{
+                                name: 'Website Blog',
+                                type: 'column',
+                                data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+                            }, {
+                                name: 'Social Media',
+                                type: 'line',
+                                data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
+                            }],
+                            chart: {
+                                height: 350,
+                                type: 'line',
+                            },
+                            stroke: {
+                                width: [0, 4]
+                            },
+                            title: {
+                                text: 'Traffic Sources (Mix Chart)'
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                enabledOnSeries: [1]
+                            },
+                            labels: ['01 Jan 2001', '02 Jan 2001', '03 Jan 2001', '04 Jan 2001', '05 Jan 2001', '06 Jan 2001', '07 Jan 2001', '08 Jan 2001', '09 Jan 2001', '10 Jan 2001', '11 Jan 2001', '12 Jan 2001'],
+                            xaxis: {
+                                type: 'datetime'
+                            },
+                            yaxis: [{
+                                title: {
+                                    text: 'Website Blog',
+                                },
+
+                            }, {
+                                opposite: true,
+                                title: {
+                                    text: 'Social Media'
+                                }
+                            }]
+                        };
+
+                        var chart = new ApexCharts(document.querySelector("#Source"), options);
+                        chart.render();
+
+
+                        $("#divSource").remove();
+                    }
+                    else {
+                        $('#SourceContainerDiv').hide();
+                    }
+
+                },
+            error: function () {
+            }
+        });
+    }
+</script>
