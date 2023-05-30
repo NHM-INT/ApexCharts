@@ -267,6 +267,12 @@
                             chart: {
                                 height: 350,
                                 type: 'pie',
+                                toolbar: {
+                                    show: true,
+                                    tools: {
+                                        download: true // <== line to add
+                                    }
+                                }
                             },
                             labels: chartData[1],
                             title: {
@@ -292,6 +298,7 @@
                                     }
                                 }
                             }
+
                         };
 
                         var chart = new ApexCharts(document.querySelector("#Ethnicity"), options);
